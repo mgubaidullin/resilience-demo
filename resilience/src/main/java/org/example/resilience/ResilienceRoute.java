@@ -28,7 +28,10 @@ public class ResilienceRoute extends EndpointRouteBuilder {
         from(direct("event"))
                 .log("${body.getClass()}")
                 .to(direct(EncryptionRoute.URI))
-                .log("${body.getClass()}");
+                .log("${body.getClass()}")
+//                .marshal().json()
+                .to(direct(DatabaseRoute.URI))
+                .log("${body}");
 
     }
 
