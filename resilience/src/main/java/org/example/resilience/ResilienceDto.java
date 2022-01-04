@@ -40,4 +40,13 @@ public class ResilienceDto {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "ResilienceDto{" +
+                "clientId=" + clientId +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
