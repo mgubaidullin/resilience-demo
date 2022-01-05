@@ -27,7 +27,7 @@ public class EncryptionRoute extends EndpointRouteBuilder {
                 .log("${body}")
                 .process(exchange ->{
                     ResilienceDto in = exchange.getIn().getBody(ResilienceDto.class);
-                    ResilienceDto out = new ResilienceDto(in.getClientId(), in.getAmount(), in.getDescription() + " [encrypted]");
+                    ResilienceDto out = new ResilienceDto(in.getClientId(), in.getAmount(), "[encrypted]");
                     exchange.getIn().setBody(out);
                 });
 

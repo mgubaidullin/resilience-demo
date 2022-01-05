@@ -16,22 +16,22 @@ public class ResilienceRoute extends EndpointRouteBuilder {
 
         from(direct(URI_START)).routeId(URI_START)
                 .to(direct(EncryptionRoute.URI))
+                .choice()
+                    .when(header(Exchange.HTTP_RESPONSE_CODE).contains(200))
+                        .to(direct(URI_STORE))
+                    .otherwise()
+                        .setBody(constant("Encryption service not available (longer than usual)"));
+
+        from(direct(URI_STORE)).routeId(URI_STORE)
+                .to(direct(DatabaseRoute.URI_INSERT))
                 .log("${headers}")
                 .log("${body}")
                 .choice()
                     .when(header(Exchange.HTTP_RESPONSE_CODE).contains(200))
-                        .to(direct(URI_STORE))
-                    .endChoice()
+                        .to(direct(KafkaRoute.URI))
                     .otherwise()
-                        .setBody(constant("Encryption service not available (longer than usual)"))
-                    .endChoice();
+                        .setBody(constant("Mongo service not available (longer than usual)"));
 
-        from(direct(URI_STORE)).routeId(URI_STORE)
-                .log("STORE");
-//                .to(direct(DatabaseRoute.URI_INSERT))
-//                .to(direct(KafkaRoute.URI))
-//                .to(direct(DatabaseRoute.URI_REMOVE))
-//                .unmarshal().json();
     }
 
 }

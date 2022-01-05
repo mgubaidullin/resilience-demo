@@ -1,37 +1,43 @@
 package org.example.resilience;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
-import org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import static org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory.MongoDbOperation.insert;
 
 
 @ApplicationScoped
 public class DatabaseRoute extends EndpointRouteBuilder {
 
-    final static String URI_INSERT = "databaseInsert";
-    final static String URI_REMOVE = "databaseRemove";
+    final static String URI_INSERT = "mongo-service-call";
 
     final static String CLIENT = "mongoClient";
     final static String DATABASE = "resilience";
     final static String COLLECTION = "event";
-    final static String ID_FIELD = "_id";
     final static String ENCRYPTED = "encrypted";
 
     @Override
     public void configure() throws Exception {
 
-//        from(direct(URI_INSERT)).routeId(URI_INSERT)
-//                .setHeader(ENCRYPTED, simple("${body}"))
-//                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(insert))
-//                .setHeader(ID_FIELD, simple("${body.get('_id')}"))
-//                .setBody(simple("${headers.encrypted}"));
-//
-//        from(direct(URI_REMOVE)).routeId(URI_REMOVE)
-//                .setHeader(ENCRYPTED, simple("${body}"))
-//                .process(e-> e.getIn().setBody(Filters.eq(ID_FIELD, e.getIn().getHeader(ID_FIELD))))
-//                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(remove))
-//                .setBody(simple("${headers.encrypted}"));
+        from(direct(URI_INSERT)).routeId(URI_INSERT)
+                .onException(Exception.class).maximumRedeliveries(2).handled(true)
+                    .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
+                    .setBody(constant("Mongo service not available"))
+                .end()
+                .log("Mongo service route")
+                .removeHeader(Exchange.HTTP_URI)
+                .removeHeader(Exchange.HTTP_PATH)
+                .removeHeader(Exchange.HTTP_RESPONSE_CODE)
+                .setHeader(ENCRYPTED, simple("${body}"))
+                .circuitBreaker().inheritErrorHandler(true).faultToleranceConfiguration().requestVolumeThreshold(10).end()
+                    .log("Mongo service call start")
+                    .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(insert))
+                    .setBody(simple("${headers.encrypted}"))
+                    .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
+                    .log("Mongo service call end")
+                .end();
     }
 
 }
