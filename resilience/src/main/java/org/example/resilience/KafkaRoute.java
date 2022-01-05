@@ -12,9 +12,9 @@ public class KafkaRoute extends EndpointRouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from(direct(URI)).routeId(URI)
-                .marshal().json()
-                .to(kafka("events"));
+//        from(direct(URI)).routeId(URI)
+//                .marshal().json()
+//                .to(kafka("events"));
     }
 
 }

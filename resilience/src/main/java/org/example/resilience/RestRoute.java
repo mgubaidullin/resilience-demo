@@ -21,6 +21,7 @@ public class RestRoute extends EndpointRouteBuilder {
                 .produces("application/json")
                 .type(ResilienceDto.class)
                 .outType(ResilienceDto.class)
-                .to(direct(ResilienceRoute.URI).getUri());
+                .skipBindingOnErrorCode(true)
+                .to(direct(ResilienceRoute.URI_START).getUri());
     }
 }

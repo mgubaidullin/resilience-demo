@@ -1,13 +1,10 @@
 package org.example.resilience;
 
-import com.mongodb.client.model.Filters;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import static org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory.MongoDbOperation.insert;
-import static org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory.MongoDbOperation.remove;
 
 @ApplicationScoped
 public class DatabaseRoute extends EndpointRouteBuilder {
@@ -24,17 +21,17 @@ public class DatabaseRoute extends EndpointRouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from(direct(URI_INSERT)).routeId(URI_INSERT)
-                .setHeader(ENCRYPTED, simple("${body}"))
-                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(insert))
-                .setHeader(ID_FIELD, simple("${body.get('_id')}"))
-                .setBody(simple("${headers.encrypted}"));
-
-        from(direct(URI_REMOVE)).routeId(URI_REMOVE)
-                .setHeader(ENCRYPTED, simple("${body}"))
-                .process(e-> e.getIn().setBody(Filters.eq(ID_FIELD, e.getIn().getHeader(ID_FIELD))))
-                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(remove))
-                .setBody(simple("${headers.encrypted}"));
+//        from(direct(URI_INSERT)).routeId(URI_INSERT)
+//                .setHeader(ENCRYPTED, simple("${body}"))
+//                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(insert))
+//                .setHeader(ID_FIELD, simple("${body.get('_id')}"))
+//                .setBody(simple("${headers.encrypted}"));
+//
+//        from(direct(URI_REMOVE)).routeId(URI_REMOVE)
+//                .setHeader(ENCRYPTED, simple("${body}"))
+//                .process(e-> e.getIn().setBody(Filters.eq(ID_FIELD, e.getIn().getHeader(ID_FIELD))))
+//                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(remove))
+//                .setBody(simple("${headers.encrypted}"));
     }
 
 }

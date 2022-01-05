@@ -63,17 +63,25 @@
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-jackson</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel.quarkus</groupId>
-            <artifactId>camel-quarkus-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel.quarkus</groupId>
-            <artifactId>camel-quarkus-mongodb</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.camel.quarkus</groupId>-->
+<!--            <artifactId>camel-quarkus-kafka</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.camel.quarkus</groupId>-->
+<!--            <artifactId>camel-quarkus-mongodb</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-microprofile-fault-tolerance</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
