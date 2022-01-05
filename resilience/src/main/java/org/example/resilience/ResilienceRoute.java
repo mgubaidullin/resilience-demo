@@ -24,8 +24,6 @@ public class ResilienceRoute extends EndpointRouteBuilder {
 
         from(direct(URI_STORE)).routeId(URI_STORE)
                 .to(direct(DatabaseRoute.URI_INSERT))
-                .log("${headers}")
-                .log("${body}")
                 .choice()
                     .when(header(Exchange.HTTP_RESPONSE_CODE).contains(200))
                         .to(direct(KafkaRoute.URI))

@@ -1,5 +1,6 @@
 package org.example.resilience;
 
+import org.apache.camel.Exchange;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,9 +14,15 @@ public class KafkaRoute extends EndpointRouteBuilder {
     public void configure() throws Exception {
 
         from(direct(URI)).routeId(URI)
-                .log("Send to kafka");
-//                .marshal().json()
-//                .to(kafka("events"));
+                .onException(Exception.class).maximumRedeliveries(2).handled(true)
+                    .setHeader("kafka", constant("not_sent"))
+                .end()
+                .log("Kafka service route")
+                .circuitBreaker().inheritErrorHandler(true).faultToleranceConfiguration().requestVolumeThreshold(10).end()
+                    .log("Kafka service call start")
+                    .to(kafka("events"))
+                    .log("Kafka service call end")
+                .end();
     }
 
 }
