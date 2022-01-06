@@ -1,0 +1,13 @@
+kind: KafkaTopic
+apiVersion: kafka.strimzi.io/v1beta2
+metadata:
+  name: events
+  labels:
+    strimzi.io/cluster: resilience
+  namespace: resilience
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 604800000
+    segment.bytes: 1073741824
