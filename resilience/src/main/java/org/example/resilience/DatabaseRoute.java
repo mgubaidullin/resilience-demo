@@ -14,7 +14,7 @@ public class DatabaseRoute extends EndpointRouteBuilder {
     final static String URI_INSERT = "mongo-service-call";
 
     final static String CLIENT = "mongoClient";
-    final static String DATABASE = "resilience";
+    final static String DATABASE = "test";
     final static String COLLECTION = "event";
     final static String ENCRYPTED = "encrypted";
 

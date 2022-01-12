@@ -6,5 +6,3 @@ resources:
 - streams-operator.yaml
 - streams-kafka.yaml
 - streams-topic.yaml
-- mongo-statefulstets.yaml
-- mongo-service.yaml
