@@ -33,7 +33,7 @@ Try to stop/start rest/kafka/mongo services to see the reaction
 
 ## Cloud
 ### Prerequisites
-OpenShift 4.8+ cluster up and running
+OpenShift 4.9+ cluster up and running
 Mongo Database in https://cloud.mongodb.com
 Java 11 installed locally
 
