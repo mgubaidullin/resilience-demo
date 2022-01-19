@@ -16,6 +16,7 @@ public class KafkaRoute extends EndpointRouteBuilder {
         from(direct(URI)).routeId(URI)
                 .onException(Exception.class).maximumRedeliveries(2).handled(true)
                     .setHeader("kafka", constant("not_sent"))
+                    .to(direct(DatabaseRoute.URI_UPDATE))
                 .end()
                 .log("Kafka service route")
                 .circuitBreaker().inheritErrorHandler(true).faultToleranceConfiguration().requestVolumeThreshold(10).end()

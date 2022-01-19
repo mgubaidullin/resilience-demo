@@ -27,9 +27,10 @@ public class ResilienceRoute extends EndpointRouteBuilder {
                 .choice()
                     .when(header(Exchange.HTTP_RESPONSE_CODE).contains(200))
                         .to(direct(KafkaRoute.URI))
+                        .to(direct(DatabaseRoute.URI_UPDATE))
+                    .endChoice()
                     .otherwise()
                         .setBody(constant("Mongo service not available (longer than usual)"));
-
     }
 
 }

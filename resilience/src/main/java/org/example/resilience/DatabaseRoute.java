@@ -1,17 +1,27 @@
 package org.example.resilience;
 
+import com.mongodb.client.model.Filters;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
+import org.apache.camel.component.mongodb.MongoDbConstants;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import static org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory.MongoDbOperation.insert;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.apache.camel.builder.endpoint.dsl.MongoDbEndpointBuilderFactory.MongoDbOperation.*;
 
 @ApplicationScoped
 public class DatabaseRoute extends EndpointRouteBuilder {
 
     final static String URI_INSERT = "mongo-service-call";
+    final static String URI_UPDATE = "mongo-service-update";
 
     final static String CLIENT = "mongoClient";
     final static String DATABASE = "test";
@@ -38,6 +48,14 @@ public class DatabaseRoute extends EndpointRouteBuilder {
                     .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(200))
                     .log("Mongo service call end")
                 .end();
-    }
 
+        from(direct(URI_UPDATE)).routeId(URI_UPDATE)
+                .process(e -> e.getIn().setBody(List.of(
+                        Filters.eq("_id", e.getIn().getHeader("CamelMongoOid")),
+                        new BsonDocument().append("$set", new BsonDocument("kafka", new BsonString(e.getIn().getHeader("kafka", "done", String.class))))
+                )))
+                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(update))
+                .setBody(simple("${headers.CamelMongoOid}"))
+                .to(mongodb(CLIENT).database(DATABASE).collection(COLLECTION).operation(findById));
+    }
 }
